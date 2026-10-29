@@ -1,4 +1,4 @@
-Contact: agungsetiabudi@ub.ac.id
+Contact: mailto:agungsetiabudi@ub.ac.id
 Expires: 2027-10-29T00:00:00.000Z
 Preferred-Languages: id, en
 Canonical: https://reslab-csub.cloud/.well-known/security.txt
