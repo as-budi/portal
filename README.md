@@ -15,6 +15,7 @@ sistem (`prefers-color-scheme`).
 
 - Isi halaman: `site/index.html`, tampilan: `site/assets/portal.css`.
 - Memasang di server: [docs/pasang-di-server.md](docs/pasang-di-server.md).
+- Memperbarui di server setelah push: `sudo /srv/portal/repo/deploy/scripts/update.sh`.
 
 ## Melihat di laptop
 

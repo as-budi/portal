@@ -18,6 +18,11 @@ if grep -qE "^Contact:.*(GANTI|contoh\.com)" "$SEC"; then
   echo "Edit $SEC first: replace the Contact line with the maintainer's email." >&2
   exit 1
 fi
+# RFC 9116: Contact berupa URI, mis. "mailto:nama@contoh.ac.id" atau "https://…".
+if ! grep -qE "^Contact: (mailto:|https://|tel:)" "$SEC"; then
+  echo "In $SEC the Contact line must be a URI, e.g. 'Contact: mailto:name@example.ac.id'." >&2
+  exit 1
+fi
 expires=$(grep -E '^Expires:' "$SEC" | cut -d' ' -f2)
 if [ "$(date -u -d "$expires" +%s)" -le "$(date -u +%s)" ]; then
   echo "The Expires date in $SEC has passed ($expires). Set a date at most 1 year ahead." >&2

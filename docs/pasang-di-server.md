@@ -39,7 +39,8 @@ portal/
 ├── deploy/
 │   ├── nginx/portal-http.conf   tahap awal (sebelum sertifikat)
 │   ├── nginx/portal.conf        konfigurasi akhir (HTTPS + header keamanan)
-│   └── scripts/publish.sh       menyalin site/ ke /srv/portal/site dengan izin yang benar
+│   ├── scripts/publish.sh       menyalin site/ ke /srv/portal/site dengan izin yang benar
+│   └── scripts/update.sh        git pull lalu publish.sh (pembaruan rutin, bagian 9)
 └── docs/pasang-di-server.md     panduan ini
 ```
 
@@ -250,22 +251,38 @@ lewati kecuali benar-benar diperlukan.
 
 ## 9. Memperbarui halaman
 
-```bash
-# cara 1 (git): commit & push dari Mac, lalu di server
-sudo git -C /srv/portal/repo pull --ff-only
-sudo /srv/portal/repo/deploy/scripts/publish.sh
+**Cara 1 (git):** commit dan push dari Mac, lalu di server cukup satu perintah:
 
-# cara 2 (rsync): ulangi rsync di langkah 2, lalu publish.sh
+```bash
+sudo /srv/portal/repo/deploy/scripts/update.sh
+# ==> git pull     (hanya fast-forward; menampilkan commit yang baru masuk)
+# ==> publish      (publish.sh dari versi yang baru ditarik)
+# Done (1c34d7e).
 ```
+
+Bila `deploy/nginx/portal.conf` ikut berubah, `update.sh` menulis *NOTE: … differs …*.
+Pasang dengan:
+
+```bash
+sudo /srv/portal/repo/deploy/scripts/update.sh --nginx
+```
+
+`--nginx` menyalin konfigurasi, menjalankan `nginx -t`, lalu reload. Bila tes gagal,
+konfigurasi lama dikembalikan dan Nginx tidak di-reload, jadi situs tetap jalan.
+
+Bila `git pull` gagal dengan *Not possible to fast-forward*, ada file yang diubah langsung di
+server (mis. `security.txt`). Lihat dengan `sudo git -C /srv/portal/repo status`, kembalikan
+dengan `sudo git -C /srv/portal/repo checkout -- <file>`, lalu ubah file itu di Mac saja.
+
+**Cara 2 (rsync):** ulangi rsync di langkah 2, lalu `publish.sh` (`update.sh` hanya untuk
+folder hasil `git clone`).
 
 Perubahan langsung terlihat (HTML tidak di-cache). Perubahan CSS bisa butuh hingga 1 hari di
 browser yang sudah pernah membuka halaman; tekan **Cmd+Shift+R** / **Ctrl+F5** untuk melihatnya
 segera.
 
-Bila `deploy/nginx/portal.conf` berubah, salin ulang seperti langkah 6.
-
-Setahun sekali, sebelum tanggal `Expires` di `security.txt` lewat, perbarui tanggal itu lalu
-jalankan `publish.sh`.
+Setahun sekali, sebelum tanggal `Expires` di `security.txt` lewat, perbarui tanggal itu (di Mac,
+commit, push), lalu jalankan `update.sh`.
 
 ## 10. Pemecahan masalah
 
@@ -278,6 +295,9 @@ jalankan `publish.sh`.
 | Halaman tanpa tampilan (tanpa CSS) | file belum dipasang atau izinnya salah: jalankan ulang `publish.sh`; cek `curl -sI https://reslab-csub.cloud/assets/portal.css` → 200 |
 | `403 Forbidden` | Nginx tidak bisa membaca `/srv/portal/site`: `sudo chmod 755 /srv/portal /srv/portal/site` (publish.sh mengatur ini) |
 | `publish.sh`: *Edit … security.txt first* | baris `Contact` masih contoh (langkah 3) |
+| `publish.sh`: *the Contact line must be a URI* | tulis `Contact: mailto:nama@contoh.ac.id`, bukan alamat email saja |
+| `update.sh`: *is not a git clone* | folder repo disalin dengan rsync; pakai cara 2 di bagian 9, atau clone ulang (langkah 2, cara 1) |
+| `update.sh`: *Not possible to fast-forward* | ada perubahan lokal di server (bagian 9) |
 | Console browser: *Refused to … Content Security Policy* | ada skrip/gaya inline atau sumber dari luar di HTML; pindahkan ke `assets/` |
 
 Log: `sudo tail -f /var/log/nginx/access.log /var/log/nginx/error.log`.
