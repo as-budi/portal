@@ -1,4 +1,3 @@
-# Laporan celah keamanan untuk *.reslab-csub.cloud (RFC 9116).
 Contact: mailto:agungsetiabudi@ub.ac.id
 Expires: 2027-10-29T00:00:00.000Z
 Preferred-Languages: id, en
