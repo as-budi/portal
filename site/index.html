@@ -1,0 +1,120 @@
+<!doctype html>
+<!--
+  Portal reslab-csub.cloud: halaman statis, pintu masuk ke IoT Platform dan MQTT Client.
+  Sengaja TANPA JavaScript, cookie, form, dan sumber dari luar (CDN, Google Fonts), supaya
+  Content-Security-Policy bisa seketat mungkin (lihat deploy/nginx/portal.conf).
+  Atribut style="..." juga tidak boleh dipakai: semua tampilan ada di assets/portal.css.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reslab CSUB · IoT Lab</title>
+  <meta name="description" content="IoT Platform and MQTT Client of Reslab CSUB: manage devices, dashboards and rules, and test MQTT from your browser.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/portal.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a class="brand" href="/">
+      <img src="/assets/logo.svg" alt="" width="32" height="32">
+      <span>Reslab CSUB</span>
+    </a>
+    <nav class="topnav" aria-label="Applications">
+      <a href="https://iot.reslab-csub.cloud/">IoT Platform</a>
+      <a href="https://mqtt.reslab-csub.cloud/">MQTT Client</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <p class="eyebrow">Internet of Things lab</p>
+      <h1>Build, connect and test IoT devices</h1>
+      <p class="lead">Two applications that work together. Register your devices and watch their data on
+        <strong>IoT Platform</strong>, then explore MQTT, simulate devices and debug messages with
+        <strong>MQTT Client</strong>, right from your browser.</p>
+    </div>
+  </section>
+
+  <section class="container apps" aria-label="Applications">
+    <article class="app-card">
+      <div class="app-icon app-icon-iot" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="16" r="2" fill="currentColor" stroke="none"/>
+          <path d="M8.5 12.5a5 5 0 0 1 7 0"/><path d="M5.5 9.5a9.2 9.2 0 0 1 13 0"/>
+        </svg>
+      </div>
+      <h2>IoT Platform</h2>
+      <p class="app-host">iot.reslab-csub.cloud</p>
+      <p>Manage devices and their sensors and actuators, build dashboards, automate with rules, and update
+        firmware over the air.</p>
+      <ul class="features">
+        <li>Devices over HTTP and MQTT (TLS)</li>
+        <li>Live dashboards and charts</li>
+        <li>Rule engine, alarms and Telegram notifications</li>
+        <li>Firmware updates (OTA) and device sharing</li>
+      </ul>
+      <a class="button button-primary" href="https://iot.reslab-csub.cloud/">Open IoT Platform</a>
+    </article>
+
+    <article class="app-card">
+      <div class="app-icon app-icon-mqtt" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 7h10M7 7l3-3M7 7l3 3"/><path d="M17 17H7M17 17l-3-3M17 17l-3 3"/>
+        </svg>
+      </div>
+      <h2>MQTT Client</h2>
+      <p class="app-host">mqtt.reslab-csub.cloud</p>
+      <p>A web MQTT client: connect to any broker, subscribe and publish, act as one of your platform devices,
+        or practise in your own MQTT sandbox.</p>
+      <ul class="features">
+        <li>Brokers over <code>wss://</code>, <code>mqtt://</code> and <code>mqtts://</code></li>
+        <li>Device simulator: telemetry, commands, OTA</li>
+        <li>Topic tree, charts and MQTT 5 properties</li>
+        <li>Export messages to JSON or CSV</li>
+      </ul>
+      <a class="button button-primary" href="https://mqtt.reslab-csub.cloud/">Open MQTT Client</a>
+    </article>
+  </section>
+
+  <section class="container section" aria-label="Accounts">
+    <div class="notice">
+    <h2>One account for both</h2>
+    <p>MQTT Client signs you in with your IoT Platform account; there is no second password.
+      You can review or revoke its access any time under <em>My profile → Connected apps</em> on IoT Platform.
+      Need an account? Use the sign-up link on the IoT Platform sign-in page if it is open, or ask the lab
+      administrator.</p>
+    </div>
+  </section>
+
+  <section class="container section connect" aria-labelledby="connect-title">
+    <h2 id="connect-title">Connecting a device</h2>
+    <p>Each device signs in with its own access token (shown on the device page, tab <em>MQTT</em>).
+      Only encrypted connections are accepted.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Protocol</th><th scope="col">Address</th><th scope="col">Used by</th></tr></thead>
+        <tbody>
+          <tr><td data-label="Protocol">HTTPS</td><td data-label="Address"><code>https://iot.reslab-csub.cloud/api/v1/&lt;token&gt;/telemetry</code></td><td data-label="Used by">ESP32 (HTTP), curl, scripts</td></tr>
+          <tr><td data-label="Protocol">MQTT over TLS</td><td data-label="Address"><code>mqtts://iot.reslab-csub.cloud:8883</code></td><td data-label="Used by">ESP32, mosquitto_pub/sub, MQTTX</td></tr>
+          <tr><td data-label="Protocol">MQTT over WebSocket</td><td data-label="Address"><code>wss://iot.reslab-csub.cloud/mqtt</code> (port 443)</td><td data-label="Used by">browsers, MQTT Client, MQTT.js</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted">The server certificate is issued by Let's Encrypt (root <em>ISRG Root X1</em>).
+      Username and password for MQTT are both the device access token.</p>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <span>Reslab CSUB · Fakultas Ilmu Komputer, Universitas Brawijaya</span>
+    <a href="/.well-known/security.txt">Report a security issue</a>
+  </div>
+</footer>
+</body>
+</html>

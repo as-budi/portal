@@ -1,0 +1,7 @@
+# Laporan celah keamanan untuk *.reslab-csub.cloud (RFC 9116).
+# GANTI baris Contact dengan alamat email pengelola, lalu jalankan deploy/scripts/publish.sh.
+# Expires wajib diperbarui sebelum lewat (paling lama 1 tahun ke depan).
+Contact: mailto:GANTI-email-pengelola@contoh.com
+Expires: 2027-10-29T00:00:00.000Z
+Preferred-Languages: id, en
+Canonical: https://reslab-csub.cloud/.well-known/security.txt
